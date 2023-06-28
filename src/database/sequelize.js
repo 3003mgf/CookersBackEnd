@@ -26,10 +26,10 @@ const modelDefiners = [];
 console.log(__dirname);
 
 // Leemos todos los archivos de la carpeta Models, los requerimos y agregamos al arreglo modelDefiners
-fs.readdirSync(path.join("/Users/spicyb/Desktop/PI-BACK/src", '/models'))
+fs.readdirSync(path.join(__dirname, '../models'))
   .filter((file) => (file.indexOf('.') !== 0) && (file !== basename) && (file.slice(-3) === '.js'))
   .forEach((file) => {
-    modelDefiners.push(require(path.join("/Users/spicyb/Desktop/PI-BACK/src", '/models', file)));
+    modelDefiners.push(require(path.join(__dirname, '../models', file)));
   });
 
 // Injectamos la conexion (sequelize) a todos los modelos
