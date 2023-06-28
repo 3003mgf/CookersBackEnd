@@ -1,9 +1,8 @@
 const { DataTypes } = require("sequelize");
-const sequelize = require("../database/sequelize");
-const Diet = require("./Diets");
 
-const Recipe = sequelize.define("recipes", {
 
+module.exports = (sequelize) =>{
+  sequelize.define("recipes", {
     id: {
       type: DataTypes.INTEGER,
       allowNull: false,
@@ -44,8 +43,5 @@ const Recipe = sequelize.define("recipes", {
   timestamps: false
 }
 )
+}
 
-Recipe.belongsToMany(Diet, {through: "recetastipos"});
-Diet.belongsToMany(Recipe, {through: "recetastipos"});
-
-module.exports = Recipe;

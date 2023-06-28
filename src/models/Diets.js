@@ -1,7 +1,8 @@
 const { DataTypes } = require("sequelize");
-const sequelize = require("../database/sequelize");
 
-const Diet = sequelize.define("diets", {
+
+module.exports = (sequelize) => {
+  sequelize.define("diets", {
   id: {
     type: DataTypes.INTEGER,
     allowNull: false,
@@ -22,6 +23,4 @@ const Diet = sequelize.define("diets", {
   timestamps: false
 }
 );
-
-
-module.exports = Diet;
+}

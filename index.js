@@ -1,17 +1,12 @@
-const app = require("./app");
-const port = app.get("port");
-const sequelize = require("./src/database/sequelize");
 
+require("dotenv").config();
+const server = require('./app');
+const { conn } = require('./src/database/sequelize.js');
+const port = process.env.PORT || 3001;
 
-const main = async() =>{
-  try{
-    await sequelize.sync({force: false});
-    app.listen(port, ()=>{
-      console.log("Server running succesfully at port %s", `${port}!`)
-    })
-  }catch(error){
-    console.log("Unable to connect to the Database :(", error)
-  }
-};
-
-main();
+// Syncing all the models at once.
+conn.sync({ force: false }).then(() => {
+  server.listen(port, () => {
+    console.log('%s listening at 3001'); // eslint-disable-line no-console
+  });
+});

@@ -1,6 +1,6 @@
 const recipeController = () =>{};
 const axios = require("axios");
-const Recipe = require("../models/Recipes");
+const {Recipes} = require("../database/sequelize");
 const { Op } = require("sequelize");
 
 require("dotenv").config();
@@ -17,7 +17,7 @@ recipeController.getAllRecipes = async(req, res) =>{
   //   order:[["name", "ASC"]]
   // }
   try{
-    const getRecipes = await Recipe.findAll({
+    const getRecipes = await Recipes.findAll({
       order:[["name", "ASC"]]
     });
 
@@ -29,9 +29,10 @@ recipeController.getAllRecipes = async(req, res) =>{
 
 recipeController.getOneRecipe = async(req, res) =>{
   const { id } = req.params;
+  
   try{
-    const getRecipe = await Recipe.findByPk(id);
-
+    const getRecipe = await Recipes.findAll({where: id});
+    console.log(getRecipe)
     res.json(getRecipe);
   }catch(error){
     console.log(error);
@@ -42,7 +43,7 @@ recipeController.getByName = async(req, res) =>{
   try{
     if(!req.query.name) return res.json("Only Name query is accepted");
     const { name } = req.query;
-    const getRecipes = await Recipe.findAll();
+    const getRecipes = await Recipes.findAll();
     
     if(name.split(" ").length === 1){
       let recipesFound = [];
@@ -99,14 +100,14 @@ recipeController.getRecipesSortedByName  = async(req, res)=>{
   const { sort } = req.params;
   try{
     if(sort === "asc"){
-      const getRecipes = await Recipe.findAll({
+      const getRecipes = await Recipes.findAll({
         order: [
           ['name', 'ASC'],
         ]
       });
       res.json(getRecipes);
     }else{
-      const getRecipes = await Recipe.findAll({
+      const getRecipes = await Recipes.findAll({
         order: [
           ['name', 'DESC'],
         ]
@@ -123,17 +124,17 @@ recipeController.getRecipesSortedByHealth = async(req, res)=>{
 
   try{
     if(sort === "best"){
-      const getRecipes = await Recipe.findAll({
+      const getRecipes = await Recipes.findAll({
         order: [["healthScore", "DESC"]]
       });
       res.json(getRecipes);
     }else if(sort === "worst"){
-      const getRecipes = await Recipe.findAll({
+      const getRecipes = await Recipes.findAll({
         order: [["healthScore", "ASC"]]
       });
       res.json(getRecipes);
     }else if(sort === "default"){
-      const getRecipes = await Recipe.findAll({
+      const getRecipes = await Recipes.findAll({
         order: [["name", "ASC"]]
       });
       res.json(getRecipes);
@@ -147,7 +148,7 @@ recipeController.getRecipesByCreated = async(req, res)=>{
   const { sort } = req.params;
   try{
     if(sort === "api"){
-      const getRecipes = await Recipe.findAll({
+      const getRecipes = await Recipes.findAll({
         where:{
           createdIndb: false
         },
@@ -155,7 +156,7 @@ recipeController.getRecipesByCreated = async(req, res)=>{
       });
       res.json(getRecipes);
     }else if(sort === "db"){
-      const getRecipes = await Recipe.findAll({
+      const getRecipes = await Recipes.findAll({
         where:{
           createdIndb: true
         },
@@ -163,7 +164,7 @@ recipeController.getRecipesByCreated = async(req, res)=>{
       });
       res.json(getRecipes);
     }else if(sort === "mix"){
-      const getRecipes = await Recipe.findAll({
+      const getRecipes = await Recipes.findAll({
         order:[["name", "ASC"]]
       });
       res.json(getRecipes);
@@ -177,12 +178,12 @@ recipeController.getRecipesByDiet = async(req, res) =>{
   const { diet } = req.params;
   try{
     if(diet === "default"){
-      const getRecipes = await Recipe.findAll({
+      const getRecipes = await Recipes.findAll({
         order:[["name", "ASC"]]
       });
       res.json(getRecipes);
     }else{
-      const getRecipes = await Recipe.findAll({
+      const getRecipes = await Recipes.findAll({
         where:{
           dietsInfo: {[Op.contains]: [diet]}
         },
@@ -205,7 +206,7 @@ recipeController.recipesToDB = async(req, res) =>{
     
     results.map(async(el) => {
       index++;
-      await Recipe.create({
+      await Recipes.create({
         id: index,
         name: el.title,
         healthScore: el.healthScore,
@@ -239,9 +240,9 @@ recipeController.createRecipe = async(req, res)=>{
   const newRecipe = req.body;
   const { name, summary, image, stepbyStep, dietsInfo, healthScore } = newRecipe;
   try{
-    const getRecipes = await Recipe.findAll();
+    const getRecipes = await Recipes.findAll();
 
-    const createRecipe = await Recipe.create({
+    const createRecipe = await Recipes.create({
       id: getRecipes.length + 1,
       name,
       summary,

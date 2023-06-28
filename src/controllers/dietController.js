@@ -1,6 +1,5 @@
 const dietController = () =>{};
-const Diet = require("../models/Diets");
-const Recipe = require("../models/Recipes");
+const {Diets} = require("../database/sequelize");
 require("dotenv").config();
 const { MY_API } = process.env;
 const axios = require("axios");
@@ -35,7 +34,7 @@ dietController.createAllDiets = async(req, res) =>{
   
     dietsArray.map(async(el) => {
       const newEl = el.replaceAll(" ", "");
-      const createRecipe = await Diet.create({
+      const createRecipe = await Diets.create({
         name: el,
         image: imagesObj[newEl]
       });
@@ -50,7 +49,7 @@ dietController.createAllDiets = async(req, res) =>{
 
 dietController.getAllDiets = async(req, res) =>{
   try{
-    const getDiets = await Diet.findAll();
+    const getDiets = await Diets.findAll();
     res.json(getDiets);
   }catch(error){
     console.log(error);
