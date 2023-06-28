@@ -6,7 +6,7 @@ const sequelize = require("./src/database/sequelize");
 const main = async() =>{
   try{
     await sequelize.sync({force: false});
-    app.listen(port, "0.0.0.0", ()=>{
+    app.listen(port, ()=>{
       console.log("Server running succesfully at port %s", `${port}!`)
     })
   }catch(error){
